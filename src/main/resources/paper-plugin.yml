@@ -1,0 +1,4 @@
+name: toss
+version: '${project.version}'
+main: io.github.sw8744.toss.Toss
+api-version: '1.20'

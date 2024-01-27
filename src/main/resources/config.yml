@@ -1,0 +1,34 @@
+stockNumber: 5
+# How Many Stocks Show People in Once
+
+stockName:
+  - "재강전자"
+  - "주호산업"
+  - "인우기술"
+  - "지민조선"
+  - "창운소프트웨어"
+  - "서윤로봇"
+  - "다민방산"
+  - "종서운수"
+  - "채원엔터테인먼트"
+  - "짱후무역"
+# Write Your Stocks' Name
+
+defaultStockPrice: 20
+# Default Stock Price
+
+stockUpMessage:
+  - "신기술 개발 성공!"
+  - "화성 착륙 성공!"
+  - "국책 연구 사업 수주 성공!"
+  - "미국과 기술 협약 성공!"
+  - "중국과 수억대 계약 성공!"
+# Write Your Stock Up Message
+
+stockDownMessage:
+    - "사장의 비리 정황 파악"
+    - "관련주 하락"
+    - "탈세 혐의 파악"
+    - "미국에게 무역 재재 가동"
+    - "로켓 발사 실패"
+# Write Your Stock Down Message
