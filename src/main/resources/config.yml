@@ -17,6 +17,12 @@ stockName:
 defaultStockPrice: 20
 # Default Stock Price
 
+stockUpdateTime: 60
+# Stock Update Time (s)
+
+maxStockDelta: 50
+# Max Stock Delta
+
 stockUpMessage:
   - "신기술 개발 성공!"
   - "화성 착륙 성공!"
@@ -32,3 +38,11 @@ stockDownMessage:
     - "미국에게 무역 재재 가동"
     - "로켓 발사 실패"
 # Write Your Stock Down Message
+
+stockFailMessage:
+  - "상장 폐지!"
+  - "파산!"
+# Write Your Stock Fail Message
+
+defaultMoney: 0
+# Default Money
