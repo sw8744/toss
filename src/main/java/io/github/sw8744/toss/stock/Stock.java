@@ -1,11 +1,15 @@
 package io.github.sw8744.toss.stock;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.joml.Random;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.List;
+
+import static io.github.sw8744.toss.economy.Money.importMoney;
+import static io.github.sw8744.toss.economy.Money.setMoney;
 
 
 public class Stock {
@@ -70,7 +74,7 @@ public class Stock {
         }
     }
 
-    public static void buyStock(String name, int amount) {
+    public static void buyStock(Player p, String name, int amount) {
         JSONObject stock = new JSONObject();
         for(int i=0; i<stockStatus.size(); i++) {
             JSONObject stock_temp = (JSONObject) stockStatus.get(i);
@@ -88,11 +92,20 @@ public class Stock {
             return;
         }
         JSONArray stockPrice = (JSONArray) stock.get("price");
-        int price = (int) stockPrice.get(stockPrice.size() - 1);
-        // TODO: 플레이어 돈 연동 필요
+        int price = (int) stockPrice.get(-1) * amount;
+        int playerMoney = importMoney(p);
+        if(playerMoney < price) {
+            Bukkit.getConsoleSender().sendMessage("§4돈이 부족합니다!");
+            return;
+        }
+        else {
+            playerMoney -= price;
+            setMoney(p, playerMoney);
+        }
+
     }
 
-    public static void sellStock(String name, int amount) {
+    public static void sellStock(Player p, String name, int amount) {
         JSONObject stock = new JSONObject();
         for(int i=0; i<stockStatus.size(); i++) {
             JSONObject stock_temp = (JSONObject) stockStatus.get(i);

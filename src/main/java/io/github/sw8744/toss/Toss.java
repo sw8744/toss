@@ -1,7 +1,8 @@
 package io.github.sw8744.toss;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import io.github.sw8744.toss.stock.Stock;
@@ -9,6 +10,9 @@ import io.github.sw8744.toss.util.PlayerDataManager;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
+
+import static io.github.sw8744.toss.economy.Exchange.resetExchange;
+import static io.github.sw8744.toss.economy.Money.resetMoney;
 
 public final class Toss extends JavaPlugin {
 
@@ -32,11 +36,18 @@ public final class Toss extends JavaPlugin {
             saveConfig();
         }
         Stock.importStock();
+        resetExchange();
         bukkitScheduler();
     }
 
     @Override
     public void onDisable() {
         Bukkit.getServer().getConsoleSender().sendMessage("§bToss §ePlugin Disabled");
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        PlayerDataManager playerDataManager = new PlayerDataManager();
+        resetMoney(e.getPlayer());
     }
 }

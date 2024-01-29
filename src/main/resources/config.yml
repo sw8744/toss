@@ -46,3 +46,11 @@ stockFailMessage:
 
 defaultMoney: 0
 # Default Money
+
+defaultOre:
+  Iron: 1
+  Gold: 10
+  Emerald: 50
+  Diamond: 100
+  Netherite: 500
+# Default Resource
