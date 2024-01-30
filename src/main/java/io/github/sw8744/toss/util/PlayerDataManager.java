@@ -3,7 +3,6 @@ package io.github.sw8744.toss.util;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.json.simple.JSONObject;
 
 import java.io.File;
 
@@ -17,7 +16,7 @@ public class PlayerDataManager {
         return config;
     }
 
-    public void saveConfig() {
+    public void savePlayerData() {
         if(config == null) {
             return;
         }

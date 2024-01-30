@@ -2,3 +2,7 @@ name: toss
 version: '${project.version}'
 main: io.github.sw8744.toss.Toss
 api-version: '1.20'
+commands:
+  toss:
+    description: Toss Command
+    usage: /<command> [args]

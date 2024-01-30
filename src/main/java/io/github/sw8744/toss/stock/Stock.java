@@ -6,10 +6,12 @@ import org.joml.Random;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.sw8744.toss.economy.Money.importMoney;
 import static io.github.sw8744.toss.economy.Money.setMoney;
+import static io.github.sw8744.toss.util.AllPlayerSend.sendAllPlayer;
 
 
 public class Stock {
@@ -32,14 +34,19 @@ public class Stock {
 
             JSONArray stockPrice = new JSONArray();
             stockPrice.add(defaultStockPrice);
-
+            stock.put("price", stockPrice);
             stockStatus.add(stock);
         }
     }
 
     public static void updateStock() {
         Random random = new Random();
+        sendAllPlayer("-------< NEWS >--------");
+        ArrayList<Integer> bypassNumbers = new ArrayList<Integer>();
         for(int i = 0; i < stockStatus.size(); i++) {
+            if(bypassNumbers.contains(i)) {
+                continue;
+            }
             JSONObject stock = (JSONObject) stockStatus.get(i);
 
             if(stock.get("status").equals(true)) {
@@ -51,27 +58,40 @@ public class Stock {
 
                 if (delta > 0){
                     int messageNumber = random.nextInt(Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("stockUpMessage").size());
-                    Bukkit.getConsoleSender().sendMessage("§4" + stock.get("name") + ", " + Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("message").get(messageNumber));
+                    sendAllPlayer("§a" + stock.get("name") + ", " + Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("stockUpMessage").get(messageNumber) + " ▲" + Integer.toString(delta));
                 }
 
                 else if (newPrice <= 0) {
                     int messageNumber = random.nextInt(Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("stockFailMessage").size());
-                    Bukkit.getConsoleSender().sendMessage("§4" + stock.get("name") + ", " + Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("message").get(messageNumber));
+                    sendAllPlayer("§4" + stock.get("name") + ", " + Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("stockFailMessage").get(messageNumber));
                     stock.replace("status", false);
                     int randomStockNumber = random.nextInt(stockStatus.size());
-
-
+                    JSONObject randomStock = (JSONObject) stockStatus.get(randomStockNumber);
+                    while(randomStock.get("status").equals(true)) {
+                            randomStockNumber = random.nextInt(stockStatus.size());
+                            randomStock = (JSONObject) stockStatus.get(randomStockNumber);
+                    }
+                    randomStock.replace("status", true);
+                    stockStatus.set(randomStockNumber, randomStock);
+                    bypassNumbers.add(randomStockNumber);
+                    int messageNumber2 = random.nextInt(Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("stockSuccessMessage").size());
+                    sendAllPlayer("§a" + randomStock.get("name") + ", " + Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("stockSuccessMessage").get(messageNumber2));
                 }
 
                 else if (delta < 0){
                     int messageNumber = random.nextInt(Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("stockDownMessage").size());
-                    Bukkit.getConsoleSender().sendMessage("§4" + stock.get("name") + ", " + Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("message").get(messageNumber));
+                    sendAllPlayer("§4" + stock.get("name") + ", " + Bukkit.getPluginManager().getPlugin("Toss").getConfig().getList("stockDownMessage").get(messageNumber) + " ▼" + Integer.toString(-delta));
+                }
+
+                else if (delta == 0) {
+                    sendAllPlayer("§7" + stock.get("name") + " 0");
                 }
 
                 stockPrice.add(newPrice);
                 stock.replace("price", stockPrice);
             }
         }
+        sendAllPlayer("----------------------");
     }
 
     public static void buyStock(Player p, String name, int amount) {

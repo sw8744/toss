@@ -1,6 +1,8 @@
 package io.github.sw8744.toss;
 
+import io.github.sw8744.toss.util.CommandManager;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +16,7 @@ import java.io.File;
 import static io.github.sw8744.toss.economy.Exchange.resetExchange;
 import static io.github.sw8744.toss.economy.Exchange.updateOre;
 import static io.github.sw8744.toss.economy.Money.resetMoney;
+import io.github.sw8744.toss.util.PlayerDataManager;
 
 public final class Toss extends JavaPlugin {
 
@@ -26,18 +29,20 @@ public final class Toss extends JavaPlugin {
             public void run() {
                 Stock.updateStock();
             }
-        }, 0, stockUpdateTime);
+        }, stockUpdateTime, stockUpdateTime);
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
                 updateOre();
             }
-        }, 0, oreUpdateTime);
+        }, oreUpdateTime, oreUpdateTime);
     }
     @Override
     public void onEnable() {
+        PlayerDataManager playerDataManager = new PlayerDataManager();
         Bukkit.getServer().getConsoleSender().sendMessage("§bToss §ePlugin Enabled");
-        saveConfig();
+        playerDataManager.savePlayerData();
+        this.getCommand("toss").setExecutor(new CommandManager());
         File config = new File(getDataFolder(), "config.yml");
         if (!config.exists()) {
             getConfig().options().copyDefaults(true);

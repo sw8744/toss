@@ -1,0 +1,8 @@
+name: toss
+version: '1.0-SNAPSHOT'
+main: io.github.sw8744.toss.Toss
+api-version: '1.20'
+commands:
+  toss:
+    description: Toss Command
+    usage: /<command> [args]

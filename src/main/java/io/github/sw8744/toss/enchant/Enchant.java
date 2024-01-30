@@ -1,11 +1,22 @@
 package io.github.sw8744.toss.enchant;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.joml.Random;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static io.github.sw8744.toss.util.GUIManager.openGUI;
 
 public class Enchant {
     public static ItemStack randomEnchant(ItemStack items) {
@@ -13,6 +24,7 @@ public class Enchant {
         int maxLevel = Bukkit.getPluginManager().getPlugin("Toss").getConfig().getInt("maxEnchantLevel");
         int maxAmount = Bukkit.getPluginManager().getPlugin("Toss").getConfig().getInt("maxEnchantAmount");
         int amount = random.nextInt(maxAmount) + 1;
+        clearEnchant(items);
         ArrayList<Enchantment> enchantments= new ArrayList<Enchantment>();
         enchantments = addEnchants(enchantments);
         for(int i = 0; i < amount; i++) {
@@ -24,6 +36,55 @@ public class Enchant {
         }
         return items;
     }
+
+    public static ItemStack clearEnchant(ItemStack items) {
+        items.getEnchantments().clear();
+        return items;
+    }
+
+    @EventHandler
+    public void onRightClickOnEnchantingTable(PlayerInteractEvent e) {
+        // if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock().getType().equals(Material.ENCHANTING_TABLE))  {
+            e.setCancelled(true);
+            ArrayList<ItemStack> guiSlots = new ArrayList<ItemStack>();
+            for(int i=0; i<9; i++) {
+                ItemStack item = new ItemStack(Material.AIR);
+                if(i <= 3) {
+                    item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+                    ItemMeta meta = item.getItemMeta();
+                    meta.setDisplayName(" ");
+                    item.setItemMeta(meta);
+
+                }
+                else if(i >= 5) {
+                    item = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+                    ItemMeta meta = item.getItemMeta();
+                    meta.setDisplayName(" ");
+                }
+                guiSlots.add(item);
+            }
+            openGUI(e.getPlayer(), "Random Enchant", 9, guiSlots);
+        //}
+    }
+
+    @EventHandler
+    public void onItemClick(InventoryClickEvent e) {
+        Player p = (Player)e.getWhoClicked();
+        List<Integer> slots = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8);
+        if(e.getSlot() == 4 && e.getView().getOriginalTitle().equals("Random Enchant") && e.getClick().isLeftClick() && e.getClickedInventory().getItem(4).getType() != Material.AIR) {
+            e.setCancelled(true);
+            ItemStack item = e.getClickedInventory().getItem(4);
+            item = randomEnchant(item);
+            e.getClickedInventory().setItem(4, item);
+        }
+        else if(e.getSlot() == 4 && e.getView().getOriginalTitle().equals("Random Enchant") && e.getClick().isRightClick() && e.getClickedInventory().getItem(4).getType() != Material.AIR) {
+            e.setCancelled(true);
+            ItemStack item = e.getClickedInventory().getItem(4);
+            p.getInventory().addItem(item);
+            e.getClickedInventory().setItem(4, new ItemStack(Material.AIR));
+        }
+    }
+
     public static ArrayList<Enchantment> addEnchants(ArrayList<Enchantment> arrayList) {
         arrayList.add(Enchantment.ARROW_DAMAGE);
         arrayList.add(Enchantment.ARROW_FIRE);

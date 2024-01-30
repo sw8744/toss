@@ -9,6 +9,8 @@ import org.json.simple.JSONObject;
 
 import java.util.*;
 
+import static io.github.sw8744.toss.util.AllPlayerSend.sendAllPlayer;
+
 public class Exchange {
     static FileConfiguration oreConfig = Bukkit.getPluginManager().getPlugin("Toss").getConfig();
     static JSONObject oreData = new JSONObject();
@@ -44,11 +46,11 @@ public class Exchange {
     public static void updateOre() {
         Random random = new Random();
         ArrayList<Integer> orePrice = new ArrayList<Integer>();
-        int ironPrice = importOre("Iron").get(-1);
-        int goldPrice = importOre("Gold").get(-1);
-        int emeraldPrice = importOre("Emerald").get(-1);
-        int diamondPrice = importOre("Diamond").get(-1);
-        int netheritePrice = importOre("Netherite").get(-1);
+        int ironPrice = importOre("Iron").get(importOre("Iron").size() - 1);
+        int goldPrice = importOre("Gold").get(importOre("Gold").size() - 1);
+        int emeraldPrice = importOre("Emerald").get(importOre("Emerald").size() - 1);
+        int diamondPrice = importOre("Diamond").get(importOre("Diamond").size() - 1);
+        int netheritePrice = importOre("Netherite").get(importOre("Netherite").size() - 1);
         ironPrice = random.nextInt(defaultGoldPrice - defaultIronPrice + 1) + defaultIronPrice;
         goldPrice = random.nextInt(defaultEmeraldPrice - defaultGoldPrice + 1) + defaultGoldPrice;
         emeraldPrice = random.nextInt(defaultDiamondPrice - defaultEmeraldPrice + 1) + defaultEmeraldPrice;
@@ -73,6 +75,7 @@ public class Exchange {
         orePrice = importOre("Netherite");
         orePrice.add(netheritePrice);
         oreData.replace("Netherite", orePrice);
+        sendAllPlayer("§e광물의 가치가 변경되었습니다!");
     }
 
     public static void buyOre(Player p, String ore, int amount) {
