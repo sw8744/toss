@@ -20,6 +20,7 @@ defaultStockPrice: 20
 stockUpdateTime: 60
 # Stock Update Time (s)
 
+
 maxStockDelta: 50
 # Max Stock Delta
 
@@ -54,3 +55,6 @@ defaultOre:
   Diamond: 100
   Netherite: 500
 # Default Resource
+
+oreUpdateTime: 60
+# Ore Update Time (s)

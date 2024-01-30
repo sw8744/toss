@@ -12,6 +12,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import java.io.File;
 
 import static io.github.sw8744.toss.economy.Exchange.resetExchange;
+import static io.github.sw8744.toss.economy.Exchange.updateOre;
 import static io.github.sw8744.toss.economy.Money.resetMoney;
 
 public final class Toss extends JavaPlugin {
@@ -19,12 +20,19 @@ public final class Toss extends JavaPlugin {
     public void bukkitScheduler() {
         BukkitScheduler scheduler = getServer().getScheduler();
         int stockUpdateTime = getConfig().getInt("stockUpdateTime") * 20;
+        int oreUpdateTime = getConfig().getInt("oreUpdateTime") * 20;
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
                 Stock.updateStock();
             }
         }, 0, stockUpdateTime);
+        scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                updateOre();
+            }
+        }, 0, oreUpdateTime);
     }
     @Override
     public void onEnable() {
