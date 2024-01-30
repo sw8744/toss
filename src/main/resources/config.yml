@@ -58,3 +58,9 @@ defaultOre:
 
 oreUpdateTime: 60
 # Ore Update Time (s)
+
+maxEnchantLevel: 5
+# Max Enchant Level
+
+maxEnchantAmount: 3
+# Max Enchant Amount
