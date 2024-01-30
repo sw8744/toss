@@ -69,6 +69,11 @@ public class Exchange {
     }
 
     public static void buyOre(Player p, String ore, int amount) {
-
+        int playerMoney = Money.importMoney(p);
+        int orePrice = importOre(ore).get(-1) * amount;
+        if(playerMoney < orePrice) {
+            p.sendMessage("§4돈이 부족합니다!");
+            return;
+        }
     }
 }
