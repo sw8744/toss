@@ -1,12 +1,14 @@
 package io.github.sw8744.toss.economy;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class Exchange {
     static FileConfiguration oreConfig = Bukkit.getPluginManager().getPlugin("Toss").getConfig();
@@ -16,6 +18,7 @@ public class Exchange {
     public static int defaultEmeraldPrice = oreConfig.getInt("defaultOre.Emerald");
     public static int defaultDiamondPrice = oreConfig.getInt("defaultOre.Diamond");
     public static int defaultNetheritePrice = oreConfig.getInt("defaultOre.Netherite");
+    public static Map<String, Material> oreMaterial = new HashMap<String, Material>();
     public static void resetExchange() {
         ArrayList<Integer> orePrice = new ArrayList<Integer>();
         orePrice.add(defaultIronPrice);
@@ -28,6 +31,11 @@ public class Exchange {
         oreData.put("Diamond", orePrice);
         orePrice.set(0, defaultNetheritePrice);
         oreData.put("Netherite", orePrice);
+        oreMaterial.put("Iron", Material.IRON_INGOT);
+        oreMaterial.put("Gold", Material.GOLD_INGOT);
+        oreMaterial.put("Emerald", Material.EMERALD);
+        oreMaterial.put("Diamond", Material.DIAMOND);
+        oreMaterial.put("Netherite", Material.NETHERITE_INGOT);
     }
 
     public static ArrayList<Integer> importOre(String ore) {
@@ -71,8 +79,30 @@ public class Exchange {
     public static void buyOre(Player p, String ore, int amount) {
         int playerMoney = Money.importMoney(p);
         int orePrice = importOre(ore).get(-1) * amount;
+
         if(playerMoney < orePrice) {
             p.sendMessage("§4돈이 부족합니다!");
+            return;
+        }
+        else {
+            playerMoney -= orePrice;
+            Money.setMoney(p, playerMoney);
+            p.getInventory().addItem(new ItemStack(oreMaterial.get(ore), amount));
+            p.sendMessage("§e" + ore + " " + Integer.toString(amount) + "개를 " + Integer.toString(orePrice) + "원에 구매했습니다.");
+        }
+    }
+
+    public static void sellOre(Player p, String ore, int amount) {
+        int playerMoney = Money.importMoney(p);
+        int orePrice = importOre(ore).get(-1) * amount;
+        if(p.getInventory().containsAtLeast(new ItemStack(oreMaterial.get(ore)), amount)) {
+            p.getInventory().removeItem(new ItemStack(oreMaterial.get(ore), amount));
+            playerMoney += orePrice;
+            Money.setMoney(p, playerMoney);
+            p.sendMessage("§e" + ore + " " + Integer.toString(amount) + "개를 " + Integer.toString(orePrice) + "원에 판매했습니다.");
+        }
+        else {
+            p.sendMessage("§4" + ore + " " + Integer.toString(amount) + "개를 가지고 있지 않습니다!");
             return;
         }
     }
