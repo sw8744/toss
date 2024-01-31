@@ -15,7 +15,7 @@ import static io.github.sw8744.toss.util.AllPlayerSend.sendAllPlayer;
 
 
 public class Stock {
-    static JSONArray stockStatus = new JSONArray();
+    public static JSONArray stockStatus = new JSONArray();
 
     public static void importStock() {
         List<String> stockList = Bukkit.getPluginManager().getPlugin("Toss").getConfig().getStringList("stockName");

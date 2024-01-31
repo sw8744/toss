@@ -11,7 +11,7 @@ public class Money {
 
     public static void resetMoney(Player p) {
         if(!playerData.getKeys(false).contains(p.getName())) {
-            playerDataManager.setConfig(p.getName().toString() + ".money", 0);
+            playerDataManager.setData(p.getName() + ".money", 0);
         }
         playerDataManager.savePlayerData();
     }
@@ -36,8 +36,8 @@ public class Money {
         if(senderMoney >= money) {
             senderMoney -= money;
             receiverMoney += money;
-            playerDataManager.setConfig(sender.getName() + ".money", senderMoney);
-            playerDataManager.setConfig(receiver.getName() + ".money", receiverMoney);
+            playerDataManager.setData(sender.getName() + ".money", senderMoney);
+            playerDataManager.setData(receiver.getName() + ".money", receiverMoney);
             playerDataManager.savePlayerData();
             sender.sendMessage("§e" + receiver.getName() + "님에게 "+ Integer.toString(money) + "원을 송금했습니다.");
         }

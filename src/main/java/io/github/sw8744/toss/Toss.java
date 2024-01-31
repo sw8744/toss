@@ -1,9 +1,13 @@
 package io.github.sw8744.toss;
 
+import io.github.sw8744.toss.enchant.Enchant;
 import io.github.sw8744.toss.util.CommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,7 +22,7 @@ import static io.github.sw8744.toss.economy.Exchange.updateOre;
 import static io.github.sw8744.toss.economy.Money.resetMoney;
 import io.github.sw8744.toss.util.PlayerDataManager;
 
-public final class Toss extends JavaPlugin {
+public final class Toss extends JavaPlugin implements Listener {
 
     public void bukkitScheduler() {
         BukkitScheduler scheduler = getServer().getScheduler();
@@ -51,6 +55,7 @@ public final class Toss extends JavaPlugin {
         Stock.importStock();
         resetExchange();
         bukkitScheduler();
+        Bukkit.getPluginManager().registerEvents(new Enchant(), this);
     }
 
     @Override
@@ -60,7 +65,7 @@ public final class Toss extends JavaPlugin {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        PlayerDataManager playerDataManager = new PlayerDataManager();
         resetMoney(e.getPlayer());
+
     }
 }

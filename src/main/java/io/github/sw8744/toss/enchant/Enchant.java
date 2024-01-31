@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.joml.Random;
@@ -18,7 +19,7 @@ import java.util.List;
 
 import static io.github.sw8744.toss.util.GUIManager.openGUI;
 
-public class Enchant {
+public class Enchant implements org.bukkit.event.Listener {
     public static ItemStack randomEnchant(ItemStack items) {
         Random random = new Random();
         int maxLevel = Bukkit.getPluginManager().getPlugin("Toss").getConfig().getInt("maxEnchantLevel");
@@ -26,7 +27,7 @@ public class Enchant {
         int amount = random.nextInt(maxAmount) + 1;
         clearEnchant(items);
         ArrayList<Enchantment> enchantments= new ArrayList<Enchantment>();
-        enchantments = addEnchants(enchantments);
+        addEnchants(enchantments);
         for(int i = 0; i < amount; i++) {
             int enchantNumber = random.nextInt(enchantments.size());
             Enchantment enchantment = enchantments.get(enchantNumber);
@@ -44,7 +45,7 @@ public class Enchant {
 
     @EventHandler
     public void onRightClickOnEnchantingTable(PlayerInteractEvent e) {
-        // if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock().getType().equals(Material.ENCHANTING_TABLE))  {
+        if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getClickedBlock().getType().equals(Material.ENCHANTING_TABLE))  {
             e.setCancelled(true);
             ArrayList<ItemStack> guiSlots = new ArrayList<ItemStack>();
             for(int i=0; i<9; i++) {
@@ -60,24 +61,28 @@ public class Enchant {
                     item = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName(" ");
+                    item.setItemMeta(meta);
                 }
                 guiSlots.add(item);
             }
             openGUI(e.getPlayer(), "Random Enchant", 9, guiSlots);
-        //}
+        }
     }
 
     @EventHandler
     public void onItemClick(InventoryClickEvent e) {
         Player p = (Player)e.getWhoClicked();
-        List<Integer> slots = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8);
-        if(e.getSlot() == 4 && e.getView().getOriginalTitle().equals("Random Enchant") && e.getClick().isLeftClick() && e.getClickedInventory().getItem(4).getType() != Material.AIR) {
+        List<Integer> slots = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        p.sendMessage(e.getSlot() + "");
+        if(e.getView().getOriginalTitle().equals("Random Enchant") && e.getClick().isLeftClick() && e.getClickedInventory().getItem(4).getType() != null) {
             e.setCancelled(true);
-            ItemStack item = e.getClickedInventory().getItem(4);
-            item = randomEnchant(item);
-            e.getClickedInventory().setItem(4, item);
+            if(e.getSlot() == 4) {
+                ItemStack item = e.getClickedInventory().getItem(4);
+                item = randomEnchant(item);
+                e.getClickedInventory().setItem(4, item);
+            }
         }
-        else if(e.getSlot() == 4 && e.getView().getOriginalTitle().equals("Random Enchant") && e.getClick().isRightClick() && e.getClickedInventory().getItem(4).getType() != Material.AIR) {
+        else if(e.getSlot() == 4 && e.getView().getOriginalTitle().equals("Random Enchant") && e.getClick().isRightClick() && e.getClickedInventory().getItem(4).getType() != null) {
             e.setCancelled(true);
             ItemStack item = e.getClickedInventory().getItem(4);
             p.getInventory().addItem(item);

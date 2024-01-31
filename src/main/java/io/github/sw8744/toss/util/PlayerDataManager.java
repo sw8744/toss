@@ -17,9 +17,6 @@ public class PlayerDataManager {
     }
 
     public void savePlayerData() {
-        if(config == null) {
-            return;
-        }
         try {
             config.save(file);
         } catch (Exception e) {
@@ -35,7 +32,7 @@ public class PlayerDataManager {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    public void setConfig(String path, Object value) {
+    public void setData(String path, Object value) {
         config.set(path, value);
     }
 }

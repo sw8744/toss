@@ -5,15 +5,17 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static io.github.sw8744.toss.util.AllPlayerSend.sendAllPlayer;
 
 public class Exchange {
     static FileConfiguration oreConfig = Bukkit.getPluginManager().getPlugin("Toss").getConfig();
-    static JSONObject oreData = new JSONObject();
+    public static JSONObject oreData = new JSONObject();
     public static int defaultIronPrice = oreConfig.getInt("defaultOre.Iron");
     public static int defaultGoldPrice = oreConfig.getInt("defaultOre.Gold");
     public static int defaultEmeraldPrice = oreConfig.getInt("defaultOre.Emerald");
@@ -21,17 +23,19 @@ public class Exchange {
     public static int defaultNetheritePrice = oreConfig.getInt("defaultOre.Netherite");
     public static Map<String, Material> oreMaterial = new HashMap<String, Material>();
     public static void resetExchange() {
-        ArrayList<Integer> orePrice = new ArrayList<Integer>();
-        orePrice.add(defaultIronPrice);
-        oreData.put("Iron", orePrice);
-        orePrice.set(0, defaultGoldPrice);
-        oreData.put("Gold", orePrice);
-        orePrice.set(0, defaultEmeraldPrice);
-        oreData.put("Emerald", orePrice);
-        orePrice.set(0, defaultDiamondPrice);
-        oreData.put("Diamond", orePrice);
-        orePrice.set(0, defaultNetheritePrice);
-        oreData.put("Netherite", orePrice);
+        ArrayList<String> oreList = new ArrayList<String>();
+        oreList.add("Iron");
+        oreList.add("Gold");
+        oreList.add("Emerald");
+        oreList.add("Diamond");
+        oreList.add("Netherite");
+        for(int i=0; i<oreList.size(); i++) {
+            String ore = oreList.get(i);
+            int temp = oreConfig.getInt("defaultOre." + ore);
+            JSONArray orePrice = new JSONArray();
+            orePrice.add(temp);
+            oreData.put(ore, orePrice);
+        }
         oreMaterial.put("Iron", Material.IRON_INGOT);
         oreMaterial.put("Gold", Material.GOLD_INGOT);
         oreMaterial.put("Emerald", Material.EMERALD);
@@ -55,7 +59,7 @@ public class Exchange {
         goldPrice = random.nextInt(defaultEmeraldPrice - defaultGoldPrice + 1) + defaultGoldPrice;
         emeraldPrice = random.nextInt(defaultDiamondPrice - defaultEmeraldPrice + 1) + defaultEmeraldPrice;
         diamondPrice = random.nextInt(defaultNetheritePrice - defaultDiamondPrice + 1) + defaultDiamondPrice;
-        netheritePrice = random.nextInt(defaultNetheritePrice + 1) + defaultDiamondPrice;
+        netheritePrice = random.nextInt(defaultNetheritePrice * 2 + 1) + defaultDiamondPrice;
         orePrice = importOre("Iron");
         orePrice.add(ironPrice);
         oreData.replace("Iron", orePrice);
